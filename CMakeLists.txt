@@ -15,12 +15,9 @@ endmacro()
 
 macro(find_commonlib_path)
 	if (CommonLibName AND NOT ${CommonLibName} STREQUAL "")
-		if (${CommonLibPath} STREQUAL "CommonLibPath-NOTFOUND")
-			#Check extern
-			find_path(CommonLibPath
-			include/REL/Relocation.h
-			PATHS extern/${CommonLibName})
-		endif()
+		find_path(CommonLibPath
+		include/REL/Relocation.h
+		PATHS extern/${CommonLibName})
 	endif()
 endmacro()
 
