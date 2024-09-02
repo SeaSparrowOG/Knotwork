@@ -15,9 +15,6 @@ endmacro()
 
 macro(find_commonlib_path)
 	if (CommonLibName AND NOT ${CommonLibName} STREQUAL "")
-		# Check path
-		set_from_environment(${CommonLibName}Path)
-		set(CommonLibPath ${${CommonLibName}Path})
 		if (${CommonLibPath} STREQUAL "CommonLibPath-NOTFOUND")
 			#Check extern
 			find_path(CommonLibPath
