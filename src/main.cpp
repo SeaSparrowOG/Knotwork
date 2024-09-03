@@ -28,49 +28,55 @@ namespace QuestPatching {
     }
 
     bool EditQuests() {
-        auto configs = clib_util::distribution::get_configs(R"(Data\SKSE\Plugins\Knotwork)");
-        for (auto& config : configs) {
-            _loggerInfo("Reading Config: {}", config);
-            CSimpleIniA ini;
-            ini.SetUnicode();
-            ini.LoadFile(config.c_str());
+        try {
+            auto configs = clib_util::distribution::get_configs(R"(Data\SKSE\Plugins\Knotwork)");
+            for (auto& config : configs) {
+                _loggerInfo("Reading Config: {}", config);
+                CSimpleIniA ini;
+                ini.SetUnicode();
+                ini.LoadFile(config.c_str());
 
-            std::list<CSimpleIniA::Entry> modNames = std::list<CSimpleIniA::Entry>();
-            ini.GetAllSections(modNames);
+                std::list<CSimpleIniA::Entry> modNames = std::list<CSimpleIniA::Entry>();
+                ini.GetAllSections(modNames);
 
-            auto* dataHandler = RE::TESDataHandler::GetSingleton();
-            for (auto& modName : modNames) {
-                auto* name = modName.pItem;
-                std::list<CSimpleIniA::Entry> entries = std::list<CSimpleIniA::Entry>();
-                ini.GetAllKeys(name, entries);
+                auto* dataHandler = RE::TESDataHandler::GetSingleton();
+                for (auto& modName : modNames) {
+                    auto* name = modName.pItem;
+                    std::list<CSimpleIniA::Entry> entries = std::list<CSimpleIniA::Entry>();
+                    ini.GetAllKeys(name, entries);
 
-                for (auto& id : entries) {
-                    if (!clib_util::string::is_only_hex(id.pItem)) {
-                        _loggerInfo(" ");
-                        _loggerError("    >Failed to resolve {}:{}", name, id.pItem);
-                        _loggerInfo(" ");
-                        continue;
+                    for (auto& id : entries) {
+                        if (!clib_util::string::is_only_hex(id.pItem)) {
+                            _loggerInfo(" ");
+                            _loggerError("    >Failed to resolve {}:{}", name, id.pItem);
+                            _loggerInfo(" ");
+                            continue;
+                        }
+
+                        auto formID = clib_util::string::to_num<RE::FormID>(id.pItem, true);
+                        auto* quest = dataHandler->LookupForm<RE::TESQuest>(formID, name);
+                        if (!quest) {
+                            _loggerInfo(" ");
+                            _loggerError("    >Converted {}:{} to formID ({}), but doesn't point to a quest.", name, id.pItem, formID);
+                            _loggerInfo(" ");
+                            continue;
+                        }
+
+                        std::uint8_t raw = ini.GetLongValue(name, id.pItem);
+                        quest->data.questType = raw;
+                        _loggerInfo("    >Setting {} to {}", quest->fullName, raw);
                     }
-
-                    auto formID = clib_util::string::to_num<RE::FormID>(id.pItem, true);
-                    auto* quest = dataHandler->LookupForm<RE::TESQuest>(formID, name);
-                    if (!quest) {
-                        _loggerInfo(" ");
-                        _loggerError("    >Converted {}:{} to formID ({}), but doesn't point to a quest.", name, id.pItem, formID);
-                        _loggerInfo(" ");
-                        continue;
-                    }
-
-                    std::uint8_t raw = ini.GetLongValue(name, id.pItem);
-                    quest->data.questType = raw;
-                    _loggerInfo("    >Setting {} to {}", quest->fullName, raw);
+                    _loggerInfo(" ");
                 }
-                _loggerInfo(" ");
+                _loggerInfo("________________________________________");
             }
-            _loggerInfo("________________________________________");
+            _loggerInfo("Finished reading configs");
+            return true;
         }
-        _loggerInfo("Finished reading configs");
-        return true;
+        catch (std::exception e) {
+            _loggerError("Failed to perform a necessary check. Error code: {}", e.what());
+            return false;
+        }
     }
 }
 
