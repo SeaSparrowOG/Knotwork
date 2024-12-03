@@ -29,6 +29,7 @@ namespace QuestPatching {
 
     bool EditQuests() {
         try {
+            auto* dataHandler = RE::TESDataHandler::GetSingleton();
             auto configs = clib_util::distribution::get_configs(R"(Data\SKSE\Plugins\Knotwork)");
             for (auto& config : configs) {
                 _loggerInfo("Reading Config: {}", config);
@@ -39,7 +40,6 @@ namespace QuestPatching {
                 std::list<CSimpleIniA::Entry> modNames = std::list<CSimpleIniA::Entry>();
                 ini.GetAllSections(modNames);
 
-                auto* dataHandler = RE::TESDataHandler::GetSingleton();
                 for (auto& modName : modNames) {
                     auto* name = modName.pItem;
                     std::list<CSimpleIniA::Entry> entries = std::list<CSimpleIniA::Entry>();
@@ -71,6 +71,15 @@ namespace QuestPatching {
                 _loggerInfo("________________________________________");
             }
             _loggerInfo("Finished reading configs");
+            _loggerInfo("________________________________________");
+            _loggerInfo("NONE Quest Patching:");
+            const auto& questArray = dataHandler->GetFormArray<RE::TESQuest>();
+
+            for (auto* quest : questArray) {
+                if (quest->data.questType == 0) {
+                    quest->data.questType = 8;
+                }
+            }
             return true;
         }
         catch (std::exception e) {
