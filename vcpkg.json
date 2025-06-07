@@ -1,21 +1,16 @@
 {
-  "name": "replaceme",
-  "version-string": "1.0.0",
-  "description": "Template for SKSE plugin built using my commonlib. MIT License by default.",
-  "homepage": "",
-  "license": "MIT",
-  "dependencies": [
-    "rsm-binary-io",
-    "spdlog",
-    "clib-util",
-    "jsoncpp",
-    "xbyak"
-  ],
-  "overrides": [
-    {
-      "name": "fmt",
-      "version": "9.1.0"
-    }
-  ],
-  "builtin-baseline": "b7dba7f9aad09a56900f21cd78cfda1258e54e38"
+    "name": "knotwork",
+    "version-string": "2.0.2",
+    "description": "Adds extra knotwork to the journal for assigning to quests.",
+    "homepage": "https://www.nexusmods.com/skyrimspecialedition/mods/128235",
+    "license": "MIT",
+    "dependencies": [
+        "boost-stl-interfaces",
+        "fmt",
+        "rsm-binary-io",
+        "spdlog",
+        "simpleini",
+        "xbyak"
+    ],
+    "builtin-baseline": "f9a99aa79c1309001e36572fa42d7d8edebfc451"
 }
