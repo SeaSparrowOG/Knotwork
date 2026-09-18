@@ -86,7 +86,7 @@ namespace StringUtils
 				}
 			}
 			catch (std::exception& e) {
-				logger::error("Caught exception: {}", e.what());
+				REX::ERROR("Caught exception: {}", e.what());
 				return response;
 			}
 		}

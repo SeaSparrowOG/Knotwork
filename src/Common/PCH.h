@@ -11,7 +11,7 @@
 #define DLLEXPORT __declspec(dllexport)
 
 #ifndef NDEBUG
-#define LOG_DEBUG(msg, ...) logger::debug(msg, ##__VA_ARGS__)
+#define LOG_DEBUG(msg, ...) REX::DEBUG(msg, ##__VA_ARGS__)
 #else
 #define LOG_DEBUG(msg, ...)
 #endif
@@ -60,7 +60,7 @@ namespace util
         }
     };
 
-    using SKSE::stl::report_and_fail;
+    using REX::FAIL;
 
     template <class T>
     using istring_map = std::map<std::string, T, iless>;
@@ -104,4 +104,4 @@ protected:
     ~Singleton() = default;
 };
 
-#define SECTION_SEPARATOR logger::info("=========================================================="sv)
+#define SECTION_SEPARATOR REX::INFO("=========================================================="sv)
